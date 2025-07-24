@@ -36,11 +36,13 @@ jobs:
       - name: Install pre-commit and gh
         # permissions issue with 2.76.0
         run: |
+          conda activate pre_commit_dev
           conda install -y pre-commit "gh !=2.76.0"
           gh --version
 
       - name: Apply and commit updates
         run: |
+          conda activate pre_commit_dev
           git clone https://github.com/E3SM-Project/mache.git update-pre-commit-deps
           cd update-pre-commit-deps
           # Configure git using GitHub Actions credentials.
@@ -66,6 +68,7 @@ jobs:
       - name: Make PR and add reviewers and labels
         if: ${{ env.UP_TO_DATE == 'false' }}
         run: |
+          conda activate pre_commit_dev
           cd update-pre-commit-deps
           gh pr create \
           --title "Update pre-commit and its dependencies" \
