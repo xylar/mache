@@ -1,0 +1,20 @@
+==== site facts: login36 2026-09-08T05:56:29-07:00 ====
+-- srun --version --
+slurm 25.11.8
+
+-- scontrol show config, the settings that matter here --
+ClusterName             = perlmutter
+Epilog[0]               = /run/slurm/conf/nodeepilog.sh
+InteractiveStepOptions  = --interactive --preserve-env --pty $SHELL
+KillWait                = 30 sec
+LaunchParameters        = send_gids,enable_nss_slurm,use_interactive_step,slurmstepd_memlock_all
+MinJobAge               = 300 sec
+Prolog[0]               = /run/slurm/conf/nodeprolog.sh
+SchedulerParameters     = no_backup_scheduling,bf_window=3600,bf_resolution=600,bf_max_job_array_resv=20,default_queue_depth=400,bf_max_job_test=1000000,bf_continue,sched_min_interval=2,max_rpc_cnt=150,max_rpc_cnt_lb=140,bf_interval=30,bf_max_time=900,bf_max_job_assoc=100,bf_min_prio_reserve=69121,sbatch_wait_nodes,salloc_wait_nodes,max_switch_wait=345600,disable_user_top,reduce_completing_frag,bf_ignore_newly_avail_nodes,batch_sched_delay=10,spec_cores_first,bf_window_linear=30
+SlurmctldHost[0]        = slurmctld(slurmctld_service.local)
+UnkillableStepTimeout   = 1085 sec
+
+-- login hostname forms --
+hostname       login36
+hostname -s    login36
+hostname -f    login36.chn.perlmutter.nersc.gov

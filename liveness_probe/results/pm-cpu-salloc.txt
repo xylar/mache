@@ -1,0 +1,125 @@
+==== salloc liveness test: nid007043 ====
+shell pid       192360
+hostname        nid007043
+hostname -s     nid007043
+job id          58069209
+SLURMD_NODENAME nid007043
+SLURM_JOB_NODELIST nid007043
+date            2026-09-08T05:58:47-07:00
+
+the two questions this answers: is this shell on one of the
+allocation's nodes, and is it still there after the allocation ends
+
+==== liveness probe: nid007043-salloc ====
+when                2026-09-08T05:58:48.708114-07:00
+pid/ppid            192371/192360
+
+-- hostname, as each source spells it --
+socket.gethostname       'nid007043'
+platform.node            'nid007043'
+os.uname().nodename      'nid007043'
+socket.getfqdn           'nid007043-hsn0'
+short                    'nid007043'
+
+-- Slurm environment --
+SLURM_JOB_ID             '58069209'
+SLURM_JOBID              '58069209'
+SLURM_JOB_NODELIST       'nid007043'
+SLURM_NODELIST           'nid007043'
+SLURMD_NODENAME          'nid007043'
+SLURM_JOB_NUM_NODES      '1'
+SLURM_NNODES             '1'
+SLURM_JOB_PARTITION      'regular_milan_ss11'
+SLURM_JOB_QOS            'debug'
+SLURM_STEP_ID            '4294967290'
+SLURM_STEPID             '4294967290'
+SLURM_PTY_PORT           '35691'
+SLURM_SUBMIT_HOST        'login36'
+SLURM_CLUSTER_NAME       'perlmutter'
+(unset)                  
+slurm version            25.11
+
+-- expanded node list --
+['nid007043']
+
+-- the two verdicts --
+fast path (local)        True
+job state (controller)   RUNNING
+fast path agrees         True
+
+-- get_parallel_system() --
+system                   SlurmSystem
+nodes                    1
+mpi_allowed              True
+squeue calls             1
+                         ran: squeue --noheader -j 58069209 -o %D
+                         note: a `-o %D` call is the node count, which #477 removes; the liveness query is `-t all -o %T`
+
+JSON {"agrees": true, "env": {"SLURMD_NODENAME": "nid007043", "SLURM_CLUSTER_NAME": "perlmutter", "SLURM_JOBID": "58069209", "SLURM_JOB_ID": "58069209", "SLURM_JOB_NODELIST": "nid007043", "SLURM_JOB_NUM_NODES": "1", "SLURM_JOB_PARTITION": "regular_milan_ss11", "SLURM_JOB_QOS": "debug", "SLURM_NNODES": "1", "SLURM_NODELIST": "nid007043", "SLURM_PTY_PORT": "35691", "SLURM_STEPID": "4294967290", "SLURM_STEP_ID": "4294967290", "SLURM_SUBMIT_HOST": "login36"}, "expanded_nodelist": {"value": ["nid007043"]}, "fast_path": {"value": true}, "hostnames": {"os.uname().nodename": "nid007043", "platform.node": "nid007043", "short": "nid007043", "socket.getfqdn": "nid007043-hsn0", "socket.gethostname": "nid007043"}, "job_state": {"value": "RUNNING"}, "label": "nid007043-salloc", "live_job_states": ["CONFIGURING", "RESIZING", "RUNNING"], "parallel_system": {"value": {"class": "SlurmSystem", "mpi_allowed": true, "nodes": 1, "squeue_calls": [["squeue", "--noheader", "-j", "58069209", "-o", "%D"]], "subprocess_calls": [["squeue", "--noheader", "-j", "58069209", "-o", "%D"]], "warnings": []}}, "pid": 192371, "ppid": 192360, "slurm_version": [25, 11], "when": "2026-09-08T05:58:48.708114-07:00"}
+-- watching for 420s every 2s --
+WATCH nid007043-salloc 2026-09-08T05:58:49.460430-07:00 elapsed=    0.0 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:58:51.900231-07:00 elapsed=    2.0 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:58:54.420968-07:00 elapsed=    4.5 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:58:56.940905-07:00 elapsed=    7.0 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:58:58.985652-07:00 elapsed=    9.5 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:01.029233-07:00 elapsed=   11.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:03.078474-07:00 elapsed=   13.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:05.142716-07:00 elapsed=   15.7 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:07.183488-07:00 elapsed=   17.7 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:09.225853-07:00 elapsed=   19.8 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:11.267734-07:00 elapsed=   21.8 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:13.316792-07:00 elapsed=   23.8 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:15.363456-07:00 elapsed=   25.9 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:17.431522-07:00 elapsed=   27.9 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:19.474319-07:00 elapsed=   30.0 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:23.015058-07:00 elapsed=   32.0 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:25.061629-07:00 elapsed=   35.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:27.102900-07:00 elapsed=   37.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:31.775558-07:00 elapsed=   39.7 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:35.885147-07:00 elapsed=   44.3 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:38.626263-07:00 elapsed=   48.5 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:41.188995-07:00 elapsed=   51.2 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:43.713957-07:00 elapsed=   53.8 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:46.235447-07:00 elapsed=   56.3 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:48.829925-07:00 elapsed=   58.8 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:52.034392-07:00 elapsed=   61.4 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:54.557113-07:00 elapsed=   64.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:57.076109-07:00 elapsed=   67.1 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T05:59:59.607647-07:00 elapsed=   69.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:02.970083-07:00 elapsed=   72.2 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:05.491204-07:00 elapsed=   75.5 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:08.004286-07:00 elapsed=   78.1 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:10.517676-07:00 elapsed=   80.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:13.274715-07:00 elapsed=   83.1 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:15.814054-07:00 elapsed=   85.8 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:18.332421-07:00 elapsed=   88.4 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:20.380057-07:00 elapsed=   90.9 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:23.816267-07:00 elapsed=   93.0 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:25.860124-07:00 elapsed=   96.4 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:27.901449-07:00 elapsed=   98.4 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:29.943901-07:00 elapsed=  100.5 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:31.995784-07:00 elapsed=  102.5 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:34.036253-07:00 elapsed=  104.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:36.076513-07:00 elapsed=  106.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:38.120576-07:00 elapsed=  108.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:40.166024-07:00 elapsed=  110.7 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:42.206740-07:00 elapsed=  112.7 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:44.251682-07:00 elapsed=  114.8 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:46.292827-07:00 elapsed=  116.8 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:48.336077-07:00 elapsed=  118.9 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:52.011776-07:00 elapsed=  120.9 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:00:55.309817-07:00 elapsed=  124.6 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:01:00.271041-07:00 elapsed=  127.9 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:01:02.856741-07:00 elapsed=  132.8 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:01:05.426156-07:00 elapsed=  135.4 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:01:09.292794-07:00 elapsed=  138.0 host=nid007043 fast_path=True state=RUNNING
+WATCH nid007043-salloc 2026-09-08T06:01:11.981505-07:00 elapsed=  141.9 host=nid007043 fast_path=True state=COMPLETING
+WATCH nid007043-salloc 2026-09-08T06:01:14.515315-07:00 elapsed=  144.6 host=nid007043 fast_path=True state=COMPLETING
+WATCH nid007043-salloc 2026-09-08T06:01:18.326761-07:00 elapsed=  147.1 host=nid007043 fast_path=True state=COMPLETING
+WATCH nid007043-salloc 2026-09-08T06:01:20.873981-07:00 elapsed=  150.9 host=nid007043 fast_path=True state=COMPLETING
+WATCH nid007043-salloc 2026-09-08T06:01:24.355015-07:00 elapsed=  153.4 host=nid007043 fast_path=True state=COMPLETING
+WATCH nid007043-salloc 2026-09-08T06:01:26.877884-07:00 elapsed=  156.9 host=nid007043 fast_path=True state=COMPLETING
+WATCH nid007043-salloc 2026-09-08T06:01:29.439973-07:00 elapsed=  159.5 host=nid007043 fast_path=True state=COMPLETING
+WATCH nid007043-salloc 2026-09-08T06:01:31.963927-07:00 elapsed=  162.0 host=nid007043 fast_path=True state=COMPLETING
+WATCH nid007043-salloc 2026-09-08T06:01:35.396281-07:00 elapsed=  164.5 host=nid007043 fast_path=True state=COMPLETING
+WATCH nid007043-salloc 2026-09-08T06:01:38.031849-07:00 elapsed=  168.0 host=nid007043 fast_path=True state=COMPLETING

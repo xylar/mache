@@ -1,0 +1,217 @@
+==== batch liveness test: pm-cpu ====
+submitted from  login36
+job id          58069208
+python          python3 (Python 3.14.7)
+date            2026-09-08T05:57:31-07:00
+
+==== the shell's own view of the node names ====
+hostname        nid005097
+hostname -s     nid005097
+hostname -f     x1105c0s0b0n1h0.chn.perlmutter.nersc.gov
+SLURMD_NODENAME nid005097
+SLURM_JOB_NODELIST nid[005097-005098]
+scontrol show hostnames:
+    nid005097
+    nid005098
+
+==== 1. from the batch script ====
+==== liveness probe: pm-cpu-batch-script ====
+when                2026-09-08T05:57:35.451543-07:00
+pid/ppid            1000328/1000297
+
+-- hostname, as each source spells it --
+socket.gethostname       'nid005097'
+platform.node            'nid005097'
+os.uname().nodename      'nid005097'
+socket.getfqdn           'nid005097-hsn0'
+short                    'nid005097'
+
+-- Slurm environment --
+SLURM_JOB_ID             '58069208'
+SLURM_JOBID              '58069208'
+SLURM_JOB_NODELIST       'nid[005097-005098]'
+SLURM_NODELIST           'nid[005097-005098]'
+SLURMD_NODENAME          'nid005097'
+SLURM_JOB_NUM_NODES      '2'
+SLURM_NNODES             '2'
+SLURM_JOB_PARTITION      'regular_milan_ss11'
+SLURM_JOB_QOS            'debug'
+SLURM_SUBMIT_HOST        'login36'
+SLURM_CLUSTER_NAME       'perlmutter'
+(unset)                  SLURM_STEP_ID SLURM_STEPID SLURM_PTY_PORT
+slurm version            25.11
+
+-- expanded node list --
+['nid005097', 'nid005098']
+
+-- the two verdicts --
+fast path (local)        True
+job state (controller)   RUNNING
+fast path agrees         True
+
+-- get_parallel_system() --
+system                   SlurmSystem
+nodes                    2
+mpi_allowed              True
+squeue calls             1
+                         ran: squeue --noheader -j 58069208 -o %D
+                         note: a `-o %D` call is the node count, which #477 removes; the liveness query is `-t all -o %T`
+
+JSON {"agrees": true, "env": {"SLURMD_NODENAME": "nid005097", "SLURM_CLUSTER_NAME": "perlmutter", "SLURM_JOBID": "58069208", "SLURM_JOB_ID": "58069208", "SLURM_JOB_NODELIST": "nid[005097-005098]", "SLURM_JOB_NUM_NODES": "2", "SLURM_JOB_PARTITION": "regular_milan_ss11", "SLURM_JOB_QOS": "debug", "SLURM_NNODES": "2", "SLURM_NODELIST": "nid[005097-005098]", "SLURM_PTY_PORT": null, "SLURM_STEPID": null, "SLURM_STEP_ID": null, "SLURM_SUBMIT_HOST": "login36"}, "expanded_nodelist": {"value": ["nid005097", "nid005098"]}, "fast_path": {"value": true}, "hostnames": {"os.uname().nodename": "nid005097", "platform.node": "nid005097", "short": "nid005097", "socket.getfqdn": "nid005097-hsn0", "socket.gethostname": "nid005097"}, "job_state": {"value": "RUNNING"}, "label": "pm-cpu-batch-script", "live_job_states": ["CONFIGURING", "RESIZING", "RUNNING"], "parallel_system": {"value": {"class": "SlurmSystem", "mpi_allowed": true, "nodes": 2, "squeue_calls": [["squeue", "--noheader", "-j", "58069208", "-o", "%D"]], "subprocess_calls": [["squeue", "--noheader", "-j", "58069208", "-o", "%D"]], "warnings": []}}, "pid": 1000328, "ppid": 1000297, "slurm_version": [25, 11], "when": "2026-09-08T05:57:35.451543-07:00"}
+==== 2. from inside a one-task srun step ====
+==== liveness probe: pm-cpu-srun-step ====
+when                2026-09-08T05:57:38.114784-07:00
+pid/ppid            1000365/1000352
+
+-- hostname, as each source spells it --
+socket.gethostname       'nid005097'
+platform.node            'nid005097'
+os.uname().nodename      'nid005097'
+socket.getfqdn           'nid005097-hsn0'
+short                    'nid005097'
+
+-- Slurm environment --
+SLURM_JOB_ID             '58069208'
+SLURM_JOBID              '58069208'
+SLURM_JOB_NODELIST       'nid[005097-005098]'
+SLURM_NODELIST           'nid[005097-005098]'
+SLURMD_NODENAME          'nid005097'
+SLURM_JOB_NUM_NODES      '2'
+SLURM_NNODES             '1'
+SLURM_JOB_PARTITION      'regular_milan_ss11'
+SLURM_JOB_QOS            'debug'
+SLURM_STEP_ID            '0'
+SLURM_STEPID             '0'
+SLURM_SUBMIT_HOST        'login36'
+SLURM_CLUSTER_NAME       'perlmutter'
+(unset)                  SLURM_PTY_PORT
+slurm version            25.11
+
+-- expanded node list --
+['nid005097', 'nid005098']
+
+-- the two verdicts --
+fast path (local)        True
+job state (controller)   RUNNING
+fast path agrees         True
+
+-- get_parallel_system() --
+system                   SlurmSystem
+nodes                    2
+mpi_allowed              True
+squeue calls             1
+                         ran: squeue --noheader -j 58069208 -o %D
+                         note: a `-o %D` call is the node count, which #477 removes; the liveness query is `-t all -o %T`
+
+JSON {"agrees": true, "env": {"SLURMD_NODENAME": "nid005097", "SLURM_CLUSTER_NAME": "perlmutter", "SLURM_JOBID": "58069208", "SLURM_JOB_ID": "58069208", "SLURM_JOB_NODELIST": "nid[005097-005098]", "SLURM_JOB_NUM_NODES": "2", "SLURM_JOB_PARTITION": "regular_milan_ss11", "SLURM_JOB_QOS": "debug", "SLURM_NNODES": "1", "SLURM_NODELIST": "nid[005097-005098]", "SLURM_PTY_PORT": null, "SLURM_STEPID": "0", "SLURM_STEP_ID": "0", "SLURM_SUBMIT_HOST": "login36"}, "expanded_nodelist": {"value": ["nid005097", "nid005098"]}, "fast_path": {"value": true}, "hostnames": {"os.uname().nodename": "nid005097", "platform.node": "nid005097", "short": "nid005097", "socket.getfqdn": "nid005097-hsn0", "socket.gethostname": "nid005097"}, "job_state": {"value": "RUNNING"}, "label": "pm-cpu-srun-step", "live_job_states": ["CONFIGURING", "RESIZING", "RUNNING"], "parallel_system": {"value": {"class": "SlurmSystem", "mpi_allowed": true, "nodes": 2, "squeue_calls": [["squeue", "--noheader", "-j", "58069208", "-o", "%D"]], "subprocess_calls": [["squeue", "--noheader", "-j", "58069208", "-o", "%D"]], "warnings": []}}, "pid": 1000365, "ppid": 1000352, "slurm_version": [25, 11], "when": "2026-09-08T05:57:38.114784-07:00"}
+==== 3. from a task on every node ====
+step task on nid005097 SLURMD_NODENAME=nid005097
+step task on nid005098 SLURMD_NODENAME=nid005098
+
+==== 4. watching through the end of the allocation ====
+the wall time is deliberately shorter than this watch, so the last
+lines below are what the two verdicts said as the job was ending
+==== liveness probe: pm-cpu-expiry ====
+when                2026-09-08T05:57:40.858673-07:00
+pid/ppid            1000435/1000297
+
+-- hostname, as each source spells it --
+socket.gethostname       'nid005097'
+platform.node            'nid005097'
+os.uname().nodename      'nid005097'
+socket.getfqdn           'nid005097-hsn0'
+short                    'nid005097'
+
+-- Slurm environment --
+SLURM_JOB_ID             '58069208'
+SLURM_JOBID              '58069208'
+SLURM_JOB_NODELIST       'nid[005097-005098]'
+SLURM_NODELIST           'nid[005097-005098]'
+SLURMD_NODENAME          'nid005097'
+SLURM_JOB_NUM_NODES      '2'
+SLURM_NNODES             '2'
+SLURM_JOB_PARTITION      'regular_milan_ss11'
+SLURM_JOB_QOS            'debug'
+SLURM_SUBMIT_HOST        'login36'
+SLURM_CLUSTER_NAME       'perlmutter'
+(unset)                  SLURM_STEP_ID SLURM_STEPID SLURM_PTY_PORT
+slurm version            25.11
+
+-- expanded node list --
+['nid005097', 'nid005098']
+
+-- the two verdicts --
+fast path (local)        True
+job state (controller)   RUNNING
+fast path agrees         True
+
+-- get_parallel_system() --
+system                   SlurmSystem
+nodes                    2
+mpi_allowed              True
+squeue calls             1
+                         ran: squeue --noheader -j 58069208 -o %D
+                         note: a `-o %D` call is the node count, which #477 removes; the liveness query is `-t all -o %T`
+
+JSON {"agrees": true, "env": {"SLURMD_NODENAME": "nid005097", "SLURM_CLUSTER_NAME": "perlmutter", "SLURM_JOBID": "58069208", "SLURM_JOB_ID": "58069208", "SLURM_JOB_NODELIST": "nid[005097-005098]", "SLURM_JOB_NUM_NODES": "2", "SLURM_JOB_PARTITION": "regular_milan_ss11", "SLURM_JOB_QOS": "debug", "SLURM_NNODES": "2", "SLURM_NODELIST": "nid[005097-005098]", "SLURM_PTY_PORT": null, "SLURM_STEPID": null, "SLURM_STEP_ID": null, "SLURM_SUBMIT_HOST": "login36"}, "expanded_nodelist": {"value": ["nid005097", "nid005098"]}, "fast_path": {"value": true}, "hostnames": {"os.uname().nodename": "nid005097", "platform.node": "nid005097", "short": "nid005097", "socket.getfqdn": "nid005097-hsn0", "socket.gethostname": "nid005097"}, "job_state": {"value": "RUNNING"}, "label": "pm-cpu-expiry", "live_job_states": ["CONFIGURING", "RESIZING", "RUNNING"], "parallel_system": {"value": {"class": "SlurmSystem", "mpi_allowed": true, "nodes": 2, "squeue_calls": [["squeue", "--noheader", "-j", "58069208", "-o", "%D"]], "subprocess_calls": [["squeue", "--noheader", "-j", "58069208", "-o", "%D"]], "warnings": []}}, "pid": 1000435, "ppid": 1000297, "slurm_version": [25, 11], "when": "2026-09-08T05:57:40.858673-07:00"}
+-- watching for 420s every 2s --
+WATCH pm-cpu-expiry 2026-09-08T05:57:41.122849-07:00 elapsed=    0.0 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:57:43.165294-07:00 elapsed=    2.0 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:57:45.206961-07:00 elapsed=    4.1 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:57:47.260914-07:00 elapsed=    6.1 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:57:49.316914-07:00 elapsed=    8.2 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:57:51.362538-07:00 elapsed=   10.2 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:57:53.440126-07:00 elapsed=   12.3 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:57:55.483451-07:00 elapsed=   14.4 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:57:57.525760-07:00 elapsed=   16.4 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:57:59.567763-07:00 elapsed=   18.4 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:01.611657-07:00 elapsed=   20.5 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:03.665748-07:00 elapsed=   22.5 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:05.708107-07:00 elapsed=   24.6 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:07.755548-07:00 elapsed=   26.6 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:10.267213-07:00 elapsed=   28.7 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:14.073225-07:00 elapsed=   31.2 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:18.225640-07:00 elapsed=   35.0 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:20.784231-07:00 elapsed=   39.1 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:24.110372-07:00 elapsed=   41.7 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:26.641940-07:00 elapsed=   45.0 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:29.157851-07:00 elapsed=   47.6 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:31.681818-07:00 elapsed=   50.1 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:34.200811-07:00 elapsed=   52.6 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:36.722402-07:00 elapsed=   55.1 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:39.284882-07:00 elapsed=   57.6 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:41.806559-07:00 elapsed=   60.2 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:44.360415-07:00 elapsed=   62.7 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:46.876845-07:00 elapsed=   65.3 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:49.388080-07:00 elapsed=   67.8 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:51.900909-07:00 elapsed=   70.3 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:54.420081-07:00 elapsed=   72.8 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:56.941428-07:00 elapsed=   75.3 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:58:58.984774-07:00 elapsed=   77.9 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:01.029917-07:00 elapsed=   79.9 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:03.077854-07:00 elapsed=   81.9 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:05.119606-07:00 elapsed=   84.0 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:07.170869-07:00 elapsed=   86.0 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:09.218441-07:00 elapsed=   88.1 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:11.264793-07:00 elapsed=   90.1 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:13.319661-07:00 elapsed=   92.2 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:15.366926-07:00 elapsed=   94.2 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:17.430882-07:00 elapsed=   96.3 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:19.472818-07:00 elapsed=   98.3 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:23.014010-07:00 elapsed=  100.4 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:25.067347-07:00 elapsed=  103.9 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:27.111776-07:00 elapsed=  106.0 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:31.775912-07:00 elapsed=  108.0 host=nid005097 fast_path=True state=RUNNING
+WATCH pm-cpu-expiry 2026-09-08T05:59:35.884307-07:00 elapsed=  112.7 host=nid005097 fast_path=True state=RUNNING
+[2026-09-08T12:59:36.564] error: *** JOB 58069208 ON nid005097 CANCELLED AT 2026-09-08T12:59:36 DUE TO TIME LIMIT ***
+WATCH pm-cpu-expiry 2026-09-08T05:59:38.625292-07:00 elapsed=  116.8 host=nid005097 fast_path=True state=COMPLETING
+WATCH pm-cpu-expiry 2026-09-08T05:59:41.187700-07:00 elapsed=  119.5 host=nid005097 fast_path=True state=COMPLETING
+WATCH pm-cpu-expiry 2026-09-08T05:59:43.713468-07:00 elapsed=  122.1 host=nid005097 fast_path=True state=COMPLETING
+WATCH pm-cpu-expiry 2026-09-08T05:59:46.232996-07:00 elapsed=  124.6 host=nid005097 fast_path=True state=COMPLETING
+WATCH pm-cpu-expiry 2026-09-08T05:59:48.828587-07:00 elapsed=  127.1 host=nid005097 fast_path=True state=COMPLETING
+WATCH pm-cpu-expiry 2026-09-08T05:59:52.033081-07:00 elapsed=  129.7 host=nid005097 fast_path=True state=COMPLETING
+WATCH pm-cpu-expiry 2026-09-08T05:59:54.556647-07:00 elapsed=  132.9 host=nid005097 fast_path=True state=COMPLETING
+WATCH pm-cpu-expiry 2026-09-08T05:59:57.076992-07:00 elapsed=  135.5 host=nid005097 fast_path=True state=COMPLETING
+WATCH pm-cpu-expiry 2026-09-08T05:59:59.608542-07:00 elapsed=  138.0 host=nid005097 fast_path=True state=COMPLETING
+WATCH pm-cpu-expiry 2026-09-08T06:00:02.970564-07:00 elapsed=  140.5 host=nid005097 fast_path=True state=COMPLETING
+WATCH pm-cpu-expiry 2026-09-08T06:00:05.491923-07:00 elapsed=  143.9 host=nid005097 fast_path=True state=COMPLETING
