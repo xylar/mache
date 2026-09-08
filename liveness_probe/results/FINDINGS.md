@@ -57,6 +57,52 @@ Issue #475 is `polaris suite ...` run from a login-node shell carrying a stale `
 
 The `COMPLETING` window is a different situation, and one #475 does not reach: it needs a process on a compute node that outlives its own `SIGTERM`.
 
-## Perlmutter
+## Perlmutter (pm-cpu)
 
-Not yet run.
+Slurm 25.11.8. `KillWait = 30 sec`, `MinJobAge = 300 sec`, and `LaunchParameters` includes **`use_interactive_step`**, which is what puts an `salloc` shell on a compute node. See `pm-cpu-site.txt`.
+
+### The salloc question, which is what Perlmutter was on the list for
+
+`pm-cpu-salloc.txt`, job 58069209. The shell landed on `nid007043`, which is the allocation's only node, `SLURMD_NODENAME=nid007043`, and the fast path returned `True` -- so unlike Chrysalis, the fast path does fire for an `salloc` shell here.
+
+It does not matter, because the shell does not outlive its allocation. The job went `COMPLETING` at 141.9 s and the process was killed at 168.0 s, 26.1 s later, against a configured `KillWait` of 30. The terminal, which the tee'd file does not capture, ended:
+
+```
+WATCH nid007043-salloc ... elapsed=  168.0 host=nid007043 fast_path=True state=COMPLETING
+srun: error: nid007043: task 0: Killed
+srun: Terminating StepId=58069209.interactive
+(mache-dev) xylar@perlmutter:login36:~/e3sm_work/mache/avoid-per-process-liveness-query>
+```
+
+This is the first of the three outcomes the handoff set out: the shell dies with the allocation, so the fast path never sees the stale case. It is a little stronger than that. The shell carrying `SLURM_JOB_ID` was the interactive step on `nid007043` and went with the node; what the user is returned to is the original login shell, which never had the variable. So this workflow leaves no stale job id behind on Perlmutter at all -- there is no surviving process holding one. A job id exported by hand, or inherited into a detached process, is still possible and still falls through to the controller query.
+
+`task 0: Killed` is also what explains a difference between the two machines. Chrysalis delivered a catchable `SIGTERM`, which the batch script had to ignore to stay alive long enough to measure anything. Neither Perlmutter run recorded a signal, because the step is killed outright. The window and its `KillWait` bound are the same; the way it is reached is not.
+
+### In a batch job: the same as Chrysalis
+
+`pm-cpu-batch-58069208.out`. On `nid005097` with `SLURM_JOB_NODELIST=nid[005097-005098]`: fast path `True` from `SLURMD_NODENAME`, controller `RUNNING`, no liveness query. The only `squeue` is the `-o %D` node count that #477 removes.
+
+### The COMPLETING window tracks KillWait, and is not machine-specific
+
+Measured at both sites and across two Slurm eras:
+
+| machine | Slurm | `KillWait` | measured window |
+| --- | --- | --- | --- |
+| Chrysalis | 20.02.4 | 90 s | 88.4 s (batch) |
+| Perlmutter | 25.11.8 | 30 s | 27.1 s (batch), 26.1 s (salloc) |
+
+So it is a property of Slurm rather than of a site's policy, and its width is the site's `KillWait`.
+
+One difference in how it is reached: the Chrysalis batch script recorded a catchable `SIGTERM` and had to ignore it to stay alive. Neither Perlmutter run recorded a signal, and the terminal shows why -- `task 0: Killed`, a bare `SIGKILL`. The observable behavior is the same; the signalling path is not.
+
+### A near miss on hostname spelling
+
+`nid005097` answers to three different names, and only one of them is usable:
+
+| source | value |
+| --- | --- |
+| `socket.gethostname()` | `nid005097` |
+| `socket.getfqdn()` | `nid005097-hsn0` |
+| `hostname -f` | `x1105c0s0b0n1h0.chn.perlmutter.nersc.gov` |
+
+Slurm calls the node `nid005097`. Splitting on `.` recovers that from `gethostname()` and from Chrysalis's `chrlogin1.lcrc.anl.gov`, but not from `nid005097-hsn0`, whose distinguishing suffix is joined with a hyphen. The code reads `socket.gethostname()`, which is correct, but the choice is load-bearing rather than incidental and there is now a comment saying so.
