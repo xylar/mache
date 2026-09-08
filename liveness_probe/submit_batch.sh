@@ -40,5 +40,5 @@ sbatch \
     --time=2 \
     --output="$PROBE_DIR/results/${MACHINE}-batch-%j.out" \
     "${SBATCH_ARGS[@]}" \
-    --export=ALL,PROBE_LABEL="$MACHINE",PROBE_PYTHON="${PROBE_PYTHON:-python3}" \
+    --export=ALL,PROBE_DIR="$PROBE_DIR",PROBE_LABEL="$MACHINE",PROBE_PYTHON="${PROBE_PYTHON:-python3}" \
     "$PROBE_DIR/batch_job.sh"

@@ -32,6 +32,7 @@ PROBE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON="${PROBE_PYTHON:-python3}"
 LABEL="${PROBE_LABEL:-$(hostname -s)}"
 WATCH_SECONDS="${PROBE_WATCH_SECONDS:-420}"
+INTERVAL="${PROBE_INTERVAL:-2}"
 
 echo "==== salloc liveness test: $LABEL ===="
 echo "shell pid       $$"
@@ -47,7 +48,7 @@ echo "allocation's nodes, and is it still there after the allocation ends"
 echo
 
 "$PYTHON" "$PROBE_DIR/probe.py" --json \
-    --label "$LABEL-salloc" --watch "$WATCH_SECONDS" --interval 2
+    --label "$LABEL-salloc" --watch "$WATCH_SECONDS" --interval "$INTERVAL"
 
 echo
 echo "==== the watch finished without being killed ===="

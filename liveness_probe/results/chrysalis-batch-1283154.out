@@ -1,0 +1,279 @@
+==== batch liveness test: chrysalis ====
+submitted from  chrlogin1.lcrc.anl.gov
+job id          1283154
+python          python3 (Python 3.11.7)
+date            2026-09-08T06:53:49-05:00
+
+==== the shell's own view of the node names ====
+hostname        chr-0506
+hostname -s     chr-0506
+hostname -f     chr-0506.lcrc.anl.gov
+SLURMD_NODENAME chr-0506
+SLURM_JOB_NODELIST chr-[0506-0507]
+scontrol show hostnames:
+    chr-0506
+    chr-0507
+
+==== 1. from the batch script ====
+note: importing mache normally failed (No module named 'lxml'); loading mache.parallel from /gpfs/fs1/home/ac.xylar/e3sm_work/mache/avoid-per-process-liveness-query without running mache/__init__.py
+==== liveness probe: chrysalis-batch-script ====
+when                2026-09-08T06:53:52.074828-05:00
+pid/ppid            3399038/3399025
+
+-- hostname, as each source spells it --
+socket.gethostname       'chr-0506'
+platform.node            'chr-0506'
+os.uname().nodename      'chr-0506'
+socket.getfqdn           'chr-0506.lcrc.anl.gov'
+short                    'chr-0506'
+
+-- Slurm environment --
+SLURM_JOB_ID             '1283154'
+SLURM_JOBID              '1283154'
+SLURM_JOB_NODELIST       'chr-[0506-0507]'
+SLURM_NODELIST           'chr-[0506-0507]'
+SLURMD_NODENAME          'chr-0506'
+SLURM_JOB_NUM_NODES      '2'
+SLURM_NNODES             '2'
+SLURM_JOB_PARTITION      'debug'
+SLURM_JOB_QOS            'normal'
+SLURM_SUBMIT_HOST        'chrlogin1.lcrc.anl.gov'
+SLURM_CLUSTER_NAME       'chr'
+(unset)                  SLURM_STEP_ID SLURM_STEPID SLURM_PTY_PORT
+slurm version            20.2
+
+-- expanded node list --
+['chr-0506', 'chr-0507']
+
+-- the two verdicts --
+fast path (local)        True
+job state (controller)   RUNNING
+fast path agrees         True
+
+-- get_parallel_system() --
+system                   SlurmSystem
+nodes                    2
+mpi_allowed              True
+squeue calls             1
+                         ran: squeue --noheader -j 1283154 -o %D
+                         note: a `-o %D` call is the node count, which #477 removes; the liveness query is `-t all -o %T`
+
+JSON {"agrees": true, "env": {"SLURMD_NODENAME": "chr-0506", "SLURM_CLUSTER_NAME": "chr", "SLURM_JOBID": "1283154", "SLURM_JOB_ID": "1283154", "SLURM_JOB_NODELIST": "chr-[0506-0507]", "SLURM_JOB_NUM_NODES": "2", "SLURM_JOB_PARTITION": "debug", "SLURM_JOB_QOS": "normal", "SLURM_NNODES": "2", "SLURM_NODELIST": "chr-[0506-0507]", "SLURM_PTY_PORT": null, "SLURM_STEPID": null, "SLURM_STEP_ID": null, "SLURM_SUBMIT_HOST": "chrlogin1.lcrc.anl.gov"}, "expanded_nodelist": {"value": ["chr-0506", "chr-0507"]}, "fast_path": {"value": true}, "hostnames": {"os.uname().nodename": "chr-0506", "platform.node": "chr-0506", "short": "chr-0506", "socket.getfqdn": "chr-0506.lcrc.anl.gov", "socket.gethostname": "chr-0506"}, "job_state": {"value": "RUNNING"}, "label": "chrysalis-batch-script", "live_job_states": ["CONFIGURING", "RESIZING", "RUNNING"], "parallel_system": {"value": {"class": "SlurmSystem", "mpi_allowed": true, "nodes": 2, "squeue_calls": [["squeue", "--noheader", "-j", "1283154", "-o", "%D"]], "subprocess_calls": [["squeue", "--noheader", "-j", "1283154", "-o", "%D"]], "warnings": []}}, "pid": 3399038, "ppid": 3399025, "slurm_version": [20, 2], "when": "2026-09-08T06:53:52.074828-05:00"}
+==== 2. from inside a one-task srun step ====
+note: importing mache normally failed (No module named 'lxml'); loading mache.parallel from /gpfs/fs1/home/ac.xylar/e3sm_work/mache/avoid-per-process-liveness-query without running mache/__init__.py
+==== liveness probe: chrysalis-srun-step ====
+when                2026-09-08T06:53:52.333716-05:00
+pid/ppid            3399058/3399052
+
+-- hostname, as each source spells it --
+socket.gethostname       'chr-0506'
+platform.node            'chr-0506'
+os.uname().nodename      'chr-0506'
+socket.getfqdn           'chr-0506.lcrc.anl.gov'
+short                    'chr-0506'
+
+-- Slurm environment --
+SLURM_JOB_ID             '1283154'
+SLURM_JOBID              '1283154'
+SLURM_JOB_NODELIST       'chr-[0506-0507]'
+SLURM_NODELIST           'chr-[0506-0507]'
+SLURMD_NODENAME          'chr-0506'
+SLURM_JOB_NUM_NODES      '2'
+SLURM_NNODES             '1'
+SLURM_JOB_PARTITION      'debug'
+SLURM_JOB_QOS            'normal'
+SLURM_STEP_ID            '0'
+SLURM_STEPID             '0'
+SLURM_SUBMIT_HOST        'chr-0506'
+SLURM_CLUSTER_NAME       'chr'
+(unset)                  SLURM_PTY_PORT
+slurm version            20.2
+
+-- expanded node list --
+['chr-0506', 'chr-0507']
+
+-- the two verdicts --
+fast path (local)        True
+job state (controller)   RUNNING
+fast path agrees         True
+
+-- get_parallel_system() --
+system                   SlurmSystem
+nodes                    2
+mpi_allowed              True
+squeue calls             1
+                         ran: squeue --noheader -j 1283154 -o %D
+                         note: a `-o %D` call is the node count, which #477 removes; the liveness query is `-t all -o %T`
+
+JSON {"agrees": true, "env": {"SLURMD_NODENAME": "chr-0506", "SLURM_CLUSTER_NAME": "chr", "SLURM_JOBID": "1283154", "SLURM_JOB_ID": "1283154", "SLURM_JOB_NODELIST": "chr-[0506-0507]", "SLURM_JOB_NUM_NODES": "2", "SLURM_JOB_PARTITION": "debug", "SLURM_JOB_QOS": "normal", "SLURM_NNODES": "1", "SLURM_NODELIST": "chr-[0506-0507]", "SLURM_PTY_PORT": null, "SLURM_STEPID": "0", "SLURM_STEP_ID": "0", "SLURM_SUBMIT_HOST": "chr-0506"}, "expanded_nodelist": {"value": ["chr-0506", "chr-0507"]}, "fast_path": {"value": true}, "hostnames": {"os.uname().nodename": "chr-0506", "platform.node": "chr-0506", "short": "chr-0506", "socket.getfqdn": "chr-0506.lcrc.anl.gov", "socket.gethostname": "chr-0506"}, "job_state": {"value": "RUNNING"}, "label": "chrysalis-srun-step", "live_job_states": ["CONFIGURING", "RESIZING", "RUNNING"], "parallel_system": {"value": {"class": "SlurmSystem", "mpi_allowed": true, "nodes": 2, "squeue_calls": [["squeue", "--noheader", "-j", "1283154", "-o", "%D"]], "subprocess_calls": [["squeue", "--noheader", "-j", "1283154", "-o", "%D"]], "warnings": []}}, "pid": 3399058, "ppid": 3399052, "slurm_version": [20, 2], "when": "2026-09-08T06:53:52.333716-05:00"}
+==== 3. from a task on every node ====
+step task on chr-0506 SLURMD_NODENAME=chr-0506
+step task on chr-0507 SLURMD_NODENAME=chr-0507
+
+==== 4. watching through the end of the allocation ====
+the wall time is deliberately shorter than this watch, so the last
+lines below are what the two verdicts said as the job was ending
+note: importing mache normally failed (No module named 'lxml'); loading mache.parallel from /gpfs/fs1/home/ac.xylar/e3sm_work/mache/avoid-per-process-liveness-query without running mache/__init__.py
+==== liveness probe: chrysalis-expiry ====
+when                2026-09-08T06:53:53.045848-05:00
+pid/ppid            3399090/3399025
+
+-- hostname, as each source spells it --
+socket.gethostname       'chr-0506'
+platform.node            'chr-0506'
+os.uname().nodename      'chr-0506'
+socket.getfqdn           'chr-0506.lcrc.anl.gov'
+short                    'chr-0506'
+
+-- Slurm environment --
+SLURM_JOB_ID             '1283154'
+SLURM_JOBID              '1283154'
+SLURM_JOB_NODELIST       'chr-[0506-0507]'
+SLURM_NODELIST           'chr-[0506-0507]'
+SLURMD_NODENAME          'chr-0506'
+SLURM_JOB_NUM_NODES      '2'
+SLURM_NNODES             '2'
+SLURM_JOB_PARTITION      'debug'
+SLURM_JOB_QOS            'normal'
+SLURM_SUBMIT_HOST        'chrlogin1.lcrc.anl.gov'
+SLURM_CLUSTER_NAME       'chr'
+(unset)                  SLURM_STEP_ID SLURM_STEPID SLURM_PTY_PORT
+slurm version            20.2
+
+-- expanded node list --
+['chr-0506', 'chr-0507']
+
+-- the two verdicts --
+fast path (local)        True
+job state (controller)   RUNNING
+fast path agrees         True
+
+-- get_parallel_system() --
+system                   SlurmSystem
+nodes                    2
+mpi_allowed              True
+squeue calls             1
+                         ran: squeue --noheader -j 1283154 -o %D
+                         note: a `-o %D` call is the node count, which #477 removes; the liveness query is `-t all -o %T`
+
+JSON {"agrees": true, "env": {"SLURMD_NODENAME": "chr-0506", "SLURM_CLUSTER_NAME": "chr", "SLURM_JOBID": "1283154", "SLURM_JOB_ID": "1283154", "SLURM_JOB_NODELIST": "chr-[0506-0507]", "SLURM_JOB_NUM_NODES": "2", "SLURM_JOB_PARTITION": "debug", "SLURM_JOB_QOS": "normal", "SLURM_NNODES": "2", "SLURM_NODELIST": "chr-[0506-0507]", "SLURM_PTY_PORT": null, "SLURM_STEPID": null, "SLURM_STEP_ID": null, "SLURM_SUBMIT_HOST": "chrlogin1.lcrc.anl.gov"}, "expanded_nodelist": {"value": ["chr-0506", "chr-0507"]}, "fast_path": {"value": true}, "hostnames": {"os.uname().nodename": "chr-0506", "platform.node": "chr-0506", "short": "chr-0506", "socket.getfqdn": "chr-0506.lcrc.anl.gov", "socket.gethostname": "chr-0506"}, "job_state": {"value": "RUNNING"}, "label": "chrysalis-expiry", "live_job_states": ["CONFIGURING", "RESIZING", "RUNNING"], "parallel_system": {"value": {"class": "SlurmSystem", "mpi_allowed": true, "nodes": 2, "squeue_calls": [["squeue", "--noheader", "-j", "1283154", "-o", "%D"]], "subprocess_calls": [["squeue", "--noheader", "-j", "1283154", "-o", "%D"]], "warnings": []}}, "pid": 3399090, "ppid": 3399025, "slurm_version": [20, 2], "when": "2026-09-08T06:53:53.045848-05:00"}
+-- watching for 420s every 2s --
+WATCH chrysalis-expiry 2026-09-08T06:53:53.077083-05:00 elapsed=    0.0 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:53:55.083739-05:00 elapsed=    2.0 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:53:57.091793-05:00 elapsed=    4.0 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:53:59.099884-05:00 elapsed=    6.0 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:01.108164-05:00 elapsed=    8.0 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:03.116518-05:00 elapsed=   10.0 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:05.125154-05:00 elapsed=   12.0 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:07.134133-05:00 elapsed=   14.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:09.142437-05:00 elapsed=   16.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:11.150949-05:00 elapsed=   18.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:13.159300-05:00 elapsed=   20.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:15.167798-05:00 elapsed=   22.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:17.175834-05:00 elapsed=   24.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:19.184330-05:00 elapsed=   26.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:21.193011-05:00 elapsed=   28.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:23.201810-05:00 elapsed=   30.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:25.210226-05:00 elapsed=   32.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:27.218814-05:00 elapsed=   34.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:29.227844-05:00 elapsed=   36.1 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:31.236852-05:00 elapsed=   38.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:33.245149-05:00 elapsed=   40.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:35.253811-05:00 elapsed=   42.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:37.262806-05:00 elapsed=   44.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:39.271491-05:00 elapsed=   46.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:41.279999-05:00 elapsed=   48.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:43.288120-05:00 elapsed=   50.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:45.296842-05:00 elapsed=   52.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:47.304858-05:00 elapsed=   54.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:49.313375-05:00 elapsed=   56.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:51.322001-05:00 elapsed=   58.2 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:53.330348-05:00 elapsed=   60.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:55.338955-05:00 elapsed=   62.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:57.347183-05:00 elapsed=   64.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:54:59.355144-05:00 elapsed=   66.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:01.363183-05:00 elapsed=   68.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:03.371536-05:00 elapsed=   70.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:05.380126-05:00 elapsed=   72.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:07.388643-05:00 elapsed=   74.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:09.397298-05:00 elapsed=   76.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:11.406033-05:00 elapsed=   78.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:13.414264-05:00 elapsed=   80.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:15.422362-05:00 elapsed=   82.3 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:17.431035-05:00 elapsed=   84.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:19.439566-05:00 elapsed=   86.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:21.448260-05:00 elapsed=   88.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:23.456591-05:00 elapsed=   90.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:25.465332-05:00 elapsed=   92.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:27.473507-05:00 elapsed=   94.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:29.482585-05:00 elapsed=   96.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:31.491339-05:00 elapsed=   98.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:33.499435-05:00 elapsed=  100.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:35.508300-05:00 elapsed=  102.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:37.517461-05:00 elapsed=  104.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:39.526308-05:00 elapsed=  106.4 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:41.534814-05:00 elapsed=  108.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:43.543365-05:00 elapsed=  110.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:45.552359-05:00 elapsed=  112.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:47.560894-05:00 elapsed=  114.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:49.569327-05:00 elapsed=  116.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:51.577753-05:00 elapsed=  118.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:53.586010-05:00 elapsed=  120.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:55.594658-05:00 elapsed=  122.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:57.602921-05:00 elapsed=  124.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:55:59.611158-05:00 elapsed=  126.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:56:01.619095-05:00 elapsed=  128.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:56:03.627815-05:00 elapsed=  130.5 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:56:05.636167-05:00 elapsed=  132.6 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:56:07.644990-05:00 elapsed=  134.6 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:56:09.653776-05:00 elapsed=  136.6 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:56:11.662216-05:00 elapsed=  138.6 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:56:13.670163-05:00 elapsed=  140.6 host=chr-0506 fast_path=True state=RUNNING
+WATCH chrysalis-expiry 2026-09-08T06:56:15.678677-05:00 elapsed=  142.6 host=chr-0506 fast_path=True state=RUNNING
+slurmstepd: error: *** JOB 1283154 ON chr-0506 CANCELLED AT 2026-09-08T06:56:16 DUE TO TIME LIMIT ***
+SIGNAL SIGTERM at 2026-09-08T06:56:16.710462-05:00 -- ignored so that the watch can see what happens next
+WATCH chrysalis-expiry 2026-09-08T06:56:17.687240-05:00 elapsed=  144.6 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:19.695838-05:00 elapsed=  146.6 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:21.704150-05:00 elapsed=  148.6 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:23.712819-05:00 elapsed=  150.6 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:25.721247-05:00 elapsed=  152.6 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:27.729733-05:00 elapsed=  154.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:29.738241-05:00 elapsed=  156.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:31.746340-05:00 elapsed=  158.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:33.755420-05:00 elapsed=  160.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:35.763407-05:00 elapsed=  162.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:37.771853-05:00 elapsed=  164.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:39.780298-05:00 elapsed=  166.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:41.788906-05:00 elapsed=  168.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:43.797679-05:00 elapsed=  170.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:45.806336-05:00 elapsed=  172.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:47.815199-05:00 elapsed=  174.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:49.824212-05:00 elapsed=  176.7 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:51.832687-05:00 elapsed=  178.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:53.841194-05:00 elapsed=  180.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:55.849413-05:00 elapsed=  182.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:57.857783-05:00 elapsed=  184.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:56:59.866491-05:00 elapsed=  186.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:01.875322-05:00 elapsed=  188.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:03.883746-05:00 elapsed=  190.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:05.892471-05:00 elapsed=  192.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:07.900809-05:00 elapsed=  194.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:09.909332-05:00 elapsed=  196.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:11.917739-05:00 elapsed=  198.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:13.926520-05:00 elapsed=  200.8 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:15.934684-05:00 elapsed=  202.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:17.942978-05:00 elapsed=  204.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:19.951682-05:00 elapsed=  206.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:21.959955-05:00 elapsed=  208.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:23.968405-05:00 elapsed=  210.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:25.976658-05:00 elapsed=  212.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:27.984581-05:00 elapsed=  214.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:29.992529-05:00 elapsed=  216.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:32.000983-05:00 elapsed=  218.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:34.009436-05:00 elapsed=  220.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:36.017998-05:00 elapsed=  222.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:38.027669-05:00 elapsed=  224.9 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:40.036006-05:00 elapsed=  227.0 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:42.044389-05:00 elapsed=  229.0 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:44.052615-05:00 elapsed=  231.0 host=chr-0506 fast_path=True state=COMPLETING
+WATCH chrysalis-expiry 2026-09-08T06:57:46.060631-05:00 elapsed=  233.0 host=chr-0506 fast_path=True state=COMPLETING

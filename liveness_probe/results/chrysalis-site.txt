@@ -1,0 +1,21 @@
+==== site facts: chrlogin1.lcrc.anl.gov 2026-09-08T06:49:10-05:00 ====
+-- srun --version --
+slurm 20.02.4
+
+-- scontrol show config, the settings that matter here --
+ClusterName             = chr
+Epilog                  = /etc/slurm/slurm.epilog
+EpilogSlurmctld         = (null)
+KillWait                = 90 sec
+LaunchParameters        = (null)
+MinJobAge               = 300 sec
+Prolog                  = /etc/slurm/slurm.prolog
+SallocDefaultCommand    = (null)
+SchedulerParameters     = max_switch_wait=120,bf_max_job_test=1000
+SlurmctldHost[0]        = chrmgt1.lcrc.anl.gov(10.60.32.2)
+UnkillableStepTimeout   = 90 sec
+
+-- login hostname forms --
+hostname       chrlogin1.lcrc.anl.gov
+hostname -s    chrlogin1
+hostname -f    chrlogin1.lcrc.anl.gov

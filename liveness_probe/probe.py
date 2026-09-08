@@ -255,28 +255,23 @@ def _build_parallel_system() -> dict:
     count comes from the environment on #477, and the liveness check is
     skipped entirely when the fast path answers.
     """
-    recorder = _RecordingRun(subprocess.run)
-    import mache.parallel.slurm as slurm_module
-    import mache.parallel.system as system_module
-
-    real_slurm_run = slurm_module.subprocess.run
-    real_system_run = system_module.subprocess.run
-    real_check_output = system_module.subprocess.check_output
-    check_recorder = _RecordingRun(real_check_output)
-    slurm_module.subprocess.run = recorder  # type: ignore[assignment]
-    system_module.subprocess.run = recorder  # type: ignore[assignment]
-    system_module.subprocess.check_output = check_recorder  # type: ignore[assignment]
+    # subprocess.check_output() calls subprocess.run(), and every module
+    # here shares the one subprocess module object, so patching run() once
+    # catches every command the code under test issues -- including the
+    # check_output() calls that _get_subprocess_int() and
+    # _get_subprocess_str() are built on.
+    real_run = subprocess.run
+    recorder = _RecordingRun(real_run)
+    subprocess.run = recorder  # type: ignore[assignment]
     try:
         with warnings.catch_warnings(record=True) as caught:
             warnings.simplefilter('always')
             system = get_parallel_system(_get_config())
         warned = [str(warning.message) for warning in caught]
     finally:
-        slurm_module.subprocess.run = real_slurm_run
-        system_module.subprocess.run = real_system_run
-        system_module.subprocess.check_output = real_check_output
+        subprocess.run = real_run  # type: ignore[assignment]
 
-    calls = recorder.calls + check_recorder.calls
+    calls = recorder.calls
     return {
         'class': type(system).__name__,
         'nodes': getattr(system, 'nodes', None),

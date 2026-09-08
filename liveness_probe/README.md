@@ -14,7 +14,7 @@ That argument is reasoning, not measurement, and these tools are what measures i
 
 ## What to run, on each machine
 
-Everything needs is a Python 3.10 or newer on `PATH`; `probe.py` loads `mache.parallel` straight from this worktree and does not need the package's dependencies installed. Set `PROBE_PYTHON` if `python3` is older than 3.10.
+All that is needed is a Python 3.10 or newer on `PATH`; `probe.py` loads `mache.parallel` straight from this worktree and does not need the package's dependencies installed. Set `PROBE_PYTHON` if `python3` is older than 3.10. On Perlmutter, `module load python` provides one.
 
 ### 1. Site facts, from a login node
 
@@ -27,18 +27,33 @@ Ordinary client commands only. `KillWait` is the width of the window test 2 meas
 ### 2. The batch job
 
 ```bash
-ACCOUNT=<your account> ./liveness_probe/submit_batch.sh
+ACCOUNT=e3sm ./liveness_probe/submit_batch.sh
 ```
 
 Two nodes for two minutes, so that the node list is a real hostlist expression and the job hits its wall time while the probe is still watching. Output lands in `liveness_probe/results/<machine>-batch-<jobid>.out`. Send that file back whole.
 
 The last section is the one to look at: it prints the local verdict and the controller's state every two seconds through the end of the allocation. What matters is whether any line says `fast_path=True` alongside a state that is not `RUNNING`.
 
+The batch script ignores `SIGTERM` on purpose. Without that, a non-interactive bash dies at the wall time and slurmstepd takes the rest of the step down with it, so the watch stops dead and measures nothing -- which is what the first Chrysalis run did. Ignoring it keeps the probe alive into the window between Slurm signalling the job and killing it, which is the window worth seeing, because the job is `COMPLETING` throughout. Slurm ends this by itself with `SIGKILL` after `KillWait` seconds; nothing is left holding nodes.
+
 ### 3. The `salloc` shell
 
+On Chrysalis:
+
 ```bash
-salloc --nodes=1 --time=2 <the machine's account/partition flags>
-# then, inside the shell it gives you:
+salloc --nodes=1 --time=2 --partition=debug --account=e3sm
+```
+
+On Perlmutter:
+
+```bash
+salloc --nodes=1 --time=2 --constraint=cpu --qos=debug --account=e3sm
+```
+
+Then, inside the shell either of those gives you:
+
+```bash
+cd <the worktree>
 ./liveness_probe/salloc_watch.sh 2>&1 | tee liveness_probe/results/<machine>-salloc.txt
 ```
 

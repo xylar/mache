@@ -20,14 +20,35 @@
 
 set -u
 
-PROBE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# sbatch copies the script into the job's spool directory, so BASH_SOURCE
+# points at that copy and not at the worktree. submit_batch.sh exports the
+# real directory; the fallback is for a script run some other way.
+PROBE_DIR="${PROBE_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 PYTHON="${PROBE_PYTHON:-python3}"
 LABEL="${PROBE_LABEL:-$(hostname -s)}"
 WATCH_SECONDS="${PROBE_WATCH_SECONDS:-420}"
+INTERVAL="${PROBE_INTERVAL:-2}"
+
+if [ ! -f "$PROBE_DIR/probe.py" ]; then
+    echo "no probe.py under '$PROBE_DIR'. Set PROBE_DIR to the"
+    echo "liveness_probe directory in the worktree and resubmit."
+    exit 1
+fi
 
 probe() {
     "$PYTHON" "$PROBE_DIR/probe.py" --json "$@"
 }
+
+# A non-interactive bash dies on SIGTERM, and when the batch script's own
+# process exits slurmstepd takes the rest of the step down with it. The
+# first run of this job stopped dead at the wall time for that reason and
+# measured nothing. Ignoring SIGTERM here keeps the shell, and so the
+# probe, alive into the window between Slurm asking the job to stop and
+# killing it -- which is the window worth measuring, because the job is
+# COMPLETING throughout it and COMPLETING is not in LIVE_JOB_STATES.
+# Slurm ends this by itself with SIGKILL after KillWait seconds, so
+# nothing is left holding the nodes.
+trap "" TERM
 
 echo "==== batch liveness test: $LABEL ===="
 echo "submitted from  ${SLURM_SUBMIT_HOST:-unknown}"
@@ -61,8 +82,8 @@ echo
 echo "==== 4. watching through the end of the allocation ===="
 echo "the wall time is deliberately shorter than this watch, so the last"
 echo "lines below are what the two verdicts said as the job was ending"
-probe --label "$LABEL-expiry" --watch "$WATCH_SECONDS" --interval 2
-
-echo "==== the watch ran to completion, so the allocation outlived it ===="
-echo "that means the wall time was longer than PROBE_WATCH_SECONDS and the"
-echo "expiry window was not observed; rerun with a shorter wall time"
+if probe --label "$LABEL-expiry" --watch "$WATCH_SECONDS" --interval "$INTERVAL"; then
+    echo "==== the watch ran to completion, so the allocation outlived it ===="
+    echo "the wall time was longer than PROBE_WATCH_SECONDS, so the expiry"
+    echo "window was not observed; rerun with a shorter wall time"
+fi

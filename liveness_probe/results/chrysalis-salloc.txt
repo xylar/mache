@@ -1,0 +1,101 @@
+salloc: Pending job allocation 1283181
+salloc: job 1283181 queued and waiting for resources
+salloc: job 1283181 has been allocated resources
+salloc: Granted job allocation 1283181
+==== salloc liveness test: chrysalis ====
+shell pid       653921
+hostname        chrlogin1.lcrc.anl.gov
+hostname -s     chrlogin1
+job id          1283181
+SLURMD_NODENAME unset
+SLURM_JOB_NODELIST chr-0493
+date            2026-09-08T07:12:30-05:00
+
+the two questions this answers: is this shell on one of the
+allocation's nodes, and is it still there after the allocation ends
+
+note: importing mache normally failed (No module named 'lxml'); loading mache.parallel from /gpfs/fs1/home/ac.xylar/e3sm_work/mache/avoid-per-process-liveness-query without running mache/__init__.py
+==== liveness probe: chrysalis-salloc ====
+when                2026-09-08T07:12:32.163151-05:00
+pid/ppid            653930/653921
+
+-- hostname, as each source spells it --
+socket.gethostname       'chrlogin1.lcrc.anl.gov'
+platform.node            'chrlogin1.lcrc.anl.gov'
+os.uname().nodename      'chrlogin1.lcrc.anl.gov'
+socket.getfqdn           'chrlogin1.lcrc.anl.gov'
+short                    'chrlogin1'
+
+-- Slurm environment --
+SLURM_JOB_ID             '1283181'
+SLURM_JOBID              '1283181'
+SLURM_JOB_NODELIST       'chr-0493'
+SLURM_NODELIST           'chr-0493'
+SLURM_JOB_NUM_NODES      '1'
+SLURM_NNODES             '1'
+SLURM_JOB_PARTITION      'debug'
+SLURM_JOB_QOS            'normal'
+SLURM_SUBMIT_HOST        'chrlogin1.lcrc.anl.gov'
+SLURM_CLUSTER_NAME       'chr'
+(unset)                  SLURMD_NODENAME SLURM_STEP_ID SLURM_STEPID SLURM_PTY_PORT
+slurm version            20.2
+
+-- expanded node list --
+['chr-0493']
+
+-- the two verdicts --
+fast path (local)        False
+job state (controller)   RUNNING
+fast path agrees         None
+
+-- get_parallel_system() --
+system                   SlurmSystem
+nodes                    1
+mpi_allowed              True
+squeue calls             2
+                         ran: scontrol show hostnames chr-0493
+                         ran: squeue --noheader -t all -j 1283181 -o %T
+                         ran: squeue --noheader -j 1283181 -o %D
+                         note: a `-o %D` call is the node count, which #477 removes; the liveness query is `-t all -o %T`
+
+JSON {"agrees": null, "env": {"SLURMD_NODENAME": null, "SLURM_CLUSTER_NAME": "chr", "SLURM_JOBID": "1283181", "SLURM_JOB_ID": "1283181", "SLURM_JOB_NODELIST": "chr-0493", "SLURM_JOB_NUM_NODES": "1", "SLURM_JOB_PARTITION": "debug", "SLURM_JOB_QOS": "normal", "SLURM_NNODES": "1", "SLURM_NODELIST": "chr-0493", "SLURM_PTY_PORT": null, "SLURM_STEPID": null, "SLURM_STEP_ID": null, "SLURM_SUBMIT_HOST": "chrlogin1.lcrc.anl.gov"}, "expanded_nodelist": {"value": ["chr-0493"]}, "fast_path": {"value": false}, "hostnames": {"os.uname().nodename": "chrlogin1.lcrc.anl.gov", "platform.node": "chrlogin1.lcrc.anl.gov", "short": "chrlogin1", "socket.getfqdn": "chrlogin1.lcrc.anl.gov", "socket.gethostname": "chrlogin1.lcrc.anl.gov"}, "job_state": {"value": "RUNNING"}, "label": "chrysalis-salloc", "live_job_states": ["CONFIGURING", "RESIZING", "RUNNING"], "parallel_system": {"value": {"class": "SlurmSystem", "mpi_allowed": true, "nodes": 1, "squeue_calls": [["squeue", "--noheader", "-t", "all", "-j", "1283181", "-o", "%T"], ["squeue", "--noheader", "-j", "1283181", "-o", "%D"]], "subprocess_calls": [["scontrol", "show", "hostnames", "chr-0493"], ["squeue", "--noheader", "-t", "all", "-j", "1283181", "-o", "%T"], ["squeue", "--noheader", "-j", "1283181", "-o", "%D"]], "warnings": []}}, "pid": 653930, "ppid": 653921, "slurm_version": [20, 2], "when": "2026-09-08T07:12:32.163151-05:00"}
+-- watching for 300s every 10s --
+WATCH chrysalis-salloc 2026-09-08T07:12:32.272743-05:00 elapsed=    0.0 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:12:42.320501-05:00 elapsed=   10.0 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:12:52.342851-05:00 elapsed=   20.1 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:13:02.360409-05:00 elapsed=   30.1 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:13:12.429212-05:00 elapsed=   40.1 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:13:22.452172-05:00 elapsed=   50.2 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:13:32.466179-05:00 elapsed=   60.2 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:13:42.497585-05:00 elapsed=   70.2 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:13:52.861740-05:00 elapsed=   80.2 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:14:02.891940-05:00 elapsed=   90.6 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:14:12.904823-05:00 elapsed=  100.6 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:14:22.925922-05:00 elapsed=  110.6 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:14:32.951157-05:00 elapsed=  120.7 host=chrlogin1 fast_path=False state=RUNNING
+WATCH chrysalis-salloc 2026-09-08T07:14:42.979292-05:00 elapsed=  130.7 host=chrlogin1 fast_path=False state=RUNNING
+salloc: Job 1283181 has exceeded its time limit and its allocation has been revoked.
+WATCH chrysalis-salloc 2026-09-08T07:14:52.994538-05:00 elapsed=  140.7 host=chrlogin1 fast_path=False state=COMPLETING
+WATCH chrysalis-salloc 2026-09-08T07:15:03.012940-05:00 elapsed=  150.7 host=chrlogin1 fast_path=False state=COMPLETING
+WATCH chrysalis-salloc 2026-09-08T07:15:13.025531-05:00 elapsed=  160.7 host=chrlogin1 fast_path=False state=COMPLETING
+WATCH chrysalis-salloc 2026-09-08T07:15:23.045412-05:00 elapsed=  170.8 host=chrlogin1 fast_path=False state=COMPLETING
+WATCH chrysalis-salloc 2026-09-08T07:15:33.060432-05:00 elapsed=  180.8 host=chrlogin1 fast_path=False state=COMPLETING
+WATCH chrysalis-salloc 2026-09-08T07:15:43.082325-05:00 elapsed=  190.8 host=chrlogin1 fast_path=False state=COMPLETING
+WATCH chrysalis-salloc 2026-09-08T07:15:53.100896-05:00 elapsed=  200.8 host=chrlogin1 fast_path=False state=TIMEOUT
+WATCH chrysalis-salloc 2026-09-08T07:16:03.120406-05:00 elapsed=  210.8 host=chrlogin1 fast_path=False state=TIMEOUT
+WATCH chrysalis-salloc 2026-09-08T07:16:13.139649-05:00 elapsed=  220.9 host=chrlogin1 fast_path=False state=TIMEOUT
+WATCH chrysalis-salloc 2026-09-08T07:16:23.161205-05:00 elapsed=  230.9 host=chrlogin1 fast_path=False state=TIMEOUT
+WATCH chrysalis-salloc 2026-09-08T07:16:33.210814-05:00 elapsed=  240.9 host=chrlogin1 fast_path=False state=TIMEOUT
+WATCH chrysalis-salloc 2026-09-08T07:16:43.237078-05:00 elapsed=  250.9 host=chrlogin1 fast_path=False state=TIMEOUT
+WATCH chrysalis-salloc 2026-09-08T07:16:53.254353-05:00 elapsed=  261.0 host=chrlogin1 fast_path=False state=TIMEOUT
+WATCH chrysalis-salloc 2026-09-08T07:17:03.280712-05:00 elapsed=  271.0 host=chrlogin1 fast_path=False state=TIMEOUT
+WATCH chrysalis-salloc 2026-09-08T07:17:13.302063-05:00 elapsed=  281.0 host=chrlogin1 fast_path=False state=TIMEOUT
+WATCH chrysalis-salloc 2026-09-08T07:17:23.324369-05:00 elapsed=  291.0 host=chrlogin1 fast_path=False state=TIMEOUT
+-- watch finished after 300s --
+
+==== the watch finished without being killed ====
+if the allocation has already ended, this shell outlived it. Run
+this now and send back what it says:
+
+    python3 /gpfs/fs1/home/ac.xylar/e3sm_work/mache/avoid-per-process-liveness-query/liveness_probe/probe.py --label chrysalis-salloc-after --json
+salloc exited with 0
