@@ -122,6 +122,47 @@ template.) Before letting it run past the pixi stage, confirm every
 from `chrysalis_test.md` test 2 (no `bin/python` in the view, `ESMFMKFILE`
 literal, the mpi4py hook).
 
+### 4. Build Omega and run the `omega_pr` suite (intel and intelgpu)
+
+The Spack tests above do not build a model. On Aurora, building Omega is
+the end-to-end check of the renamed compilers (`intel`, `intelgpu`): the
+load script's modules and `POLARIS_COMPILER`, the library env's
+`METIS_ROOT`/`PARMETIS_ROOT`/`PIO` from the captured activation, and
+Omega's vendored CIME config. Omega `develop` still knows Aurora's compilers
+only by the old names (`oneapi-ifx`); the rename comes with E3SM `master`,
+merged into Omega `develop` by https://github.com/E3SM-Project/Omega/pull/566.
+Until that is merged, use the test merge Xylar built on 2026-09-21 for
+polaris PR 793: a local branch `test_merge_e3sm_master` (E3SM `master`
+merged into Omega `develop`) in the Omega checkout under
+`/lus/flare/projects/E3SM_Dec/xylar/polaris_0.10/aurora/test_20260921/`
+(the `omega_pr_intel_mpich` and `omega_pr_intelgpu_mpich` suites there
+were built from it). If you cannot find it, ask Xylar; do not build Omega
+`develop` as is, it will fail on the compiler name.
+
+In the polaris clone from test 1, point the Omega submodule at that branch
+(`git -C e3sm_submodules/Omega fetch <path-or-remote>
+test_merge_e3sm_master && git -C e3sm_submodules/Omega checkout
+FETCH_HEAD`), then for each compiler, in a fresh shell:
+
+```bash
+source load_polaris_aurora_intel_mpich.sh      # then intelgpu
+polaris suite -c ocean -t omega_pr --clean_build --model omega \
+    -w /lus/flare/projects/E3SM_Dec/$USER/spack-v1-test/omega_pr_intel_mpich
+cd /lus/flare/projects/E3SM_Dec/$USER/spack-v1-test/omega_pr_intel_mpich
+qsub job_script_omega_pr.sh
+```
+(`polaris suite` builds Omega into `build/` under `-w`; see
+`docs/developers_guide/quick_start.md` for the manual cmake build if you
+need to debug. The `intelgpu` load script comes from test 2, so run test 2
+after all.) Baseline from 2026-09-21 with mache 4.0.0 (polaris PR 793,
+Testing comment): both builds succeed, 19 of 24 tasks pass on each
+compiler with identical results; the same 5 `baroclinic_channel` and
+related tasks fail on both and are unrelated. Report the build outcome
+and the pass/fail list against that baseline. A build failure that
+mentions a compiler name, a missing module or an unset `PIO`/`METIS_ROOT`
+is a mache problem; a failing task that also failed in the baseline is
+not.
+
 ## What to report
 
 Per test: pass/fail, log path, deviations, error text, and the final
