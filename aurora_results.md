@@ -65,6 +65,23 @@ clones `polaris/`, `e3sm-unified/`; Spack instances `polaris_spack/`,
   problem, not mache's; worked around by initialising the submodule from the
   login node before the deploy.
 
+- `ce7c6285` Fetch GitHub over https for every git command in a deploy.
+  Xylar asked for the downstream ssh submodule URLs to be handled robustly
+  on compute nodes (nightly regression testing deploys there). At the start
+  of `mache deploy run`, mache sets git's environment-scoped configuration
+  (`GIT_CONFIG_COUNT`/`GIT_CONFIG_KEY_n`/`GIT_CONFIG_VALUE_n`, git 2.31+)
+  rewriting `git@github.com:` and `ssh://git@github.com/` to
+  `https://github.com/`; every child process inherits it, so mache's own
+  submodule updates and downstream hooks' are covered, and the user's git
+  configuration and pushes elsewhere are untouched. Unit tests (including
+  one that `git ls-remote --get-url` resolves an ssh remote to https with
+  the variables set); users guide has a "Deploying on a compute node"
+  section. Verified with job 8847509 (`polaris/deploy_intel.log`): with
+  `jigsaw-python` deinitialised and its `.git/modules` store removed, the
+  compute-node deploy cloned it ("registered" with the ssh URL, no `ssh:`
+  line in the log) and went on; the submodule's stored remote URL is still
+  the ssh one.
+
 - Overlay `a23a0a2` (pushed to `E3SM-Project/e3sm-spack-packages@main` with
   Xylar's OK; pinned by `b8074fd0`): esmf queries the
   oneAPI GCC toolchain with Spack's `Executable`. Attempt 3 (job 8846622,
@@ -265,8 +282,8 @@ vendored CIME config on both toolchains.
 
 ## Still open
 
-- The final PR head `b8074fd0` (the pin) was not deployed again; the
-  deploys above used the same overlay commit through a local `spack.pins`
-  override, since removed from both clones.
-- The downstream ssh submodule URLs (polaris, E3SM-Unified) for
-  compute-node deploys at ALCF; not mache's.
+- Job 8847509 (above) also deployed the final PR head `ce7c6285` with the
+  pinned overlay (no local override): existing polaris instance, overlay
+  reset to `a23a0a2` from GitHub, everything reused, load script written.
+- Nothing else. The downstream ssh submodule URLs are handled by
+  `ce7c6285` (below), verified on a compute node.
