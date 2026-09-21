@@ -65,8 +65,8 @@ clones `polaris/`, `e3sm-unified/`; Spack instances `polaris_spack/`,
   problem, not mache's; worked around by initialising the submodule from the
   login node before the deploy.
 
-- Overlay `a23a0a2` (local so far; push to `E3SM-Project/e3sm-spack-packages@main`
-  awaits Xylar's OK, then the SHA goes into `pins.yaml`): esmf queries the
+- Overlay `a23a0a2` (pushed to `E3SM-Project/e3sm-spack-packages@main` with
+  Xylar's OK; pinned by `b8074fd0`): esmf queries the
   oneAPI GCC toolchain with Spack's `Executable`. Attempt 3 (job 8846622,
   `deploy_attempt3_esmf_py36.log`) built the whole library env and most of
   the software env, then `esmf@8.9.1` failed in `setup_build_environment`:
@@ -265,9 +265,8 @@ vendored CIME config on both toolchains.
 
 ## Still open
 
-- Push overlay `a23a0a2` to `E3SM-Project/e3sm-spack-packages@main` and
-  put its SHA into `mache/spack/pins.yaml` (blocked by the permission
-  classifier in this session; the two downstream clones carry a local
-  `spack.pins` override pointing at the local clone meanwhile).
+- The final PR head `b8074fd0` (the pin) was not deployed again; the
+  deploys above used the same overlay commit through a local `spack.pins`
+  override, since removed from both clones.
 - The downstream ssh submodule URLs (polaris, E3SM-Unified) for
   compute-node deploys at ALCF; not mache's.
