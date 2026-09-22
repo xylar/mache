@@ -245,16 +245,17 @@ gets in the way of a model build or a run.
 
 ## Still open
 
-- Two stale paths in the pm templates, both pre-existing on `main`, and
-  neither breaking anything today, so neither is changed here.
-  `/opt/cray/xpmem/2.6.2-.../lib64/pkgconfig` (the compiler external's
-  `PKG_CONFIG_PATH` prepend) no longer exists; `cray-xpmem.pc` now lives
-  in `/usr/lib64/pkgconfig`, which pkg-config searches anyway, so the
-  prepend is dead weight. The `python` external's prefix
-  (`/global/common/software/nersc/pm-2022q3/sw/python/3.9-anaconda-2021.11`)
-  and its module are gone too; with `buildable: false` this only bites if
-  something in a DAG needs python, which nothing in these environments
-  does.
+- Both stale paths are gone (`569483db`, on Xylar's call): the compiler
+  external's xpmem `PKG_CONFIG_PATH` prepend, whose directory no longer
+  exists now that `cray-xpmem.pc` lives in `/usr/lib64/pkgconfig`, and the
+  `python` external, whose prefix and `python/3.9-anaconda-2021.11` module
+  are both gone. Removing the external means Spack would build a python if
+  something ever needed one; nothing in these environments does.
+  Concretization is otherwise unchanged, though the built packages' hashes
+  move, because the compiler external's `extra_attributes` are part of the
+  spec. Confirmed with a full polaris pm-cpu deploy on the cleaned
+  templates (`deploy_after_cleanup.log`): both envs rebuilt from the new
+  hashes, exit 0, and the load-script checks above are unchanged.
 - `e3sm-scorpio@2.0.3` does not configure with `nvhpc@25.9` (see test 5).
   Nothing deploys the nvidia templates today, so this is recorded rather
   than chased.
