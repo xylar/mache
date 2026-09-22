@@ -195,13 +195,13 @@ deployment stayed intact: **pass** on the first attempt, no deviations.
 
 ## 5. pm-cpu intel and the nvidia templates
 
-`pm-cpu_intel_mpich.yaml` needed two fixes (`00515295`, above): a `gcc`
+`pm-cpu_intel_mpich.yaml` needed two fixes (`84c6a8e2`, above): a `gcc`
 external, without which the environment does not concretize at all, and
 the oneAPI root as `prefix:`, the failure already seen on Chrysalis and
 Aurora. Both were found by deploying polaris with `--compiler intel` into
 `polaris_intel_spack` and reproduced and fixed by hand on the instance
 before committing. The deploy was then rerun with the fixed template
-(`polaris_intel/deploy_attempt2.log`, mache `00515295`): **pass**. The
+(`polaris_intel/deploy_attempt2.log`, mache `84c6a8e2`): **pass**. The
 library env is all `%oneapi@2025.3` (`intel-oneapi-runtime@2025.3` and
 `gcc-runtime@14.3.0` from the two externals, then metis, parmetis,
 e3sm-scorpio) and the software env builds with gnu, as `software_compiler
@@ -245,7 +245,7 @@ gets in the way of a model build or a run.
 
 ## Still open
 
-- Both stale paths are gone (`569483db`, on Xylar's call): the compiler
+- Both stale paths are gone (`5c9dd9fe`, on Xylar's call): the compiler
   external's xpmem `PKG_CONFIG_PATH` prepend, whose directory no longer
   exists now that `cray-xpmem.pc` lives in `/usr/lib64/pkgconfig`, and the
   `python` external, whose prefix and `python/3.9-anaconda-2021.11` module
