@@ -255,3 +255,9 @@ gets in the way of a model build or a run.
   and its module are gone too; with `buildable: false` this only bites if
   something in a DAG needs python, which nothing in these environments
   does.
+- `e3sm-scorpio@2.0.3` does not configure with `nvhpc@25.9` (see test 5).
+  Nothing deploys the nvidia templates today, so this is recorded rather
+  than chased.
+- The existing-instance rerun was exercised with polaris only, as on the
+  other two machines; E3SM-Unified and the pm-gpu, intel instances were
+  each built once.
