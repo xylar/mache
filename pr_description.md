@@ -1,8 +1,4 @@
-This PR moves `mache` from the `E3SM-Project/spack` fork (Spack 0.23 plus E3SM packages on a `spack_for_mache_<version>` branch) to unmodified Spack 1.x. Environments are built from three pinned sources: a `spack/spack` release, a `spack/spack-packages` release and the new [E3SM-Project/e3sm-spack-packages](https://github.com/E3SM-Project/e3sm-spack-packages) overlay, which carries only the E3SM delta (Albany, Trilinos-for-Albany, and subclasses of upstream recipes for newer versions and fixes). The design is in the `spack_v1_design.md` draft that accompanies this branch; Andrew Nolan's #281 was the starting point. This is a breaking change for Spack instances and templates, so the version is 5.0.0rc1.
-
-For reviewers to decide:
-
-- Whether `spack_v1_design.md` should be committed under `docs/design/` with this PR.
+This PR moves `mache` from the `E3SM-Project/spack` fork (Spack 0.23 plus E3SM packages on a `spack_for_mache_<version>` branch) to unmodified Spack 1.x. Environments are built from three pinned sources: a `spack/spack` release, a `spack/spack-packages` release and the new [E3SM-Project/e3sm-spack-packages](https://github.com/E3SM-Project/e3sm-spack-packages) overlay, which carries only the E3SM delta (Albany, Trilinos-for-Albany, and subclasses of upstream recipes for newer versions and fixes). The design is in `docs/design/spack_v1.md`; Andrew Nolan's #281 was the starting point. This is a breaking change for Spack instances and templates, so the version is 5.0.0rc1.
 
 What changes for downstream repositories:
 
@@ -22,7 +18,7 @@ Checklist
 - [x] User's Guide has been updated if needed
 - [x] Developer's Guide has been updated if needed
 - [x] API documentation lists any new or modified class, method, or function
-- [ ] Documentation [builds](https://docs.e3sm.org/mache/main/developers_guide/building_docs.html) cleanly and changes look as expected
+- [x] Documentation [builds](https://docs.e3sm.org/mache/main/developers_guide/building_docs.html) cleanly and changes look as expected
 - [x] Tests pass and new features are covered by tests
 - [x] PR description includes a summary and any relevant issue references
 - [x] `Testing` comment, if appropriate, in the PR documents testing used to verify the changes
