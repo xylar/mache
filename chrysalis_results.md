@@ -111,13 +111,14 @@ gnu anyway); polaris gnu/openmpi is the "if time allows" item instead.
 Attempt 1 (before `3554cfb1`): pixi env, JIGSAW and the three clones fine;
 `spack install` failed at concretization (see above).
 
-Attempt 2 (`deploy_attempt2_stale_mache.log`): same failure, because
-`bootstrap.py::_clone_mache_repo` keeps an existing
-`deploy_tmp/build_mache/mache` clone unless `--recreate`, so the rerun
-still installed mache at `f2a43396`. Worth knowing for anyone iterating on
-a mache branch with `--mache-fork/--mache-branch`: remove
-`deploy_tmp/build_mache` between runs (pre-existing behaviour on `main`,
-not this branch's).
+Attempt 2 (`deploy_attempt2_stale_mache.log`): same failure, because the
+run had started (and finished, log mtime 05:43) before the fix commit
+`3554cfb1` (05:52) existed; its `Cloning into 'mache'` was a fresh clone
+of the unfixed branch. The file name and the "stale clone" explanation
+recorded here at the time were wrong: `deploy.py` runs
+`shutil.rmtree('deploy_tmp')` before every bootstrap, so
+`deploy_tmp/build_mache/mache` never survives to a second run (mache
+#494, closed with that correction).
 
 Attempt 3 (fresh `polaris_spack`, `deploy_tmp/build_mache` removed, mache at
 `3554cfb1`; `deploy_attempt3_oneapi_prefix.log`): three clones, `spack
