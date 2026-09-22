@@ -137,6 +137,60 @@ reapplied, `spack isolate --self` with the bootstrap store preserved (no
 envs "recreating environment" with all 18 packages `[+]` and nothing
 rebuilt, activation recaptured, load script rewritten.
 
+## 2. E3SM-Unified, pm-cpu gnu/mpich (PR 157 checked out, `0f509b9`)
+
+`deploy.log`, mache `40579f2c`, `--prefix .../e3sm-unified-pixi
+--spack-tmpdir .../spack-tmp`, fresh instance: **pass** on the first
+attempt, about 75 min on a login node. Every `Running from:` path is under
+the test root, "Skipping shared load-script aliases" is logged and nothing
+was written under `/global/common/software/e3sm` or
+`/global/cfs/cdirs/e3sm/software`. The Spack tmpdir was created and used
+(the `c282988c` fix).
+
+Env `e3sm_unified_gnu_mpich` concretized 50 specs and built esmf 8.9.1
+`~python`, moab 5.6.0 with eigen 3.4.1, nco 5.3.9, tempestremap 2.2.0,
+tempestextremes 2.4.2, gsl, udunits, zoltan, antlr, flex, bison and the
+rest; hdf5, netcdf-c, netcdf-fortran, parallel-netcdf, cray-mpich and
+cray-libsci are external (`use_e3sm_hdf5_netcdf = True`). Provenance lists
+the three commits and `spack: patches:`.
+
+Checks:
+- The view has no `bin/python`; `ESMF_RegridWeightGen`, `mbtempest`,
+  `GenerateOfflineMap`, `DetectNodes`, `ncremap` and `ncks` are all in it.
+- `activate.sh`: literals for `SPACK_ROOT`, `SPACK_ENV`, `SPACK_ENV_VIEW`,
+  `ESMFMKFILE` (the view's `lib/esmf.mk`), `GSL_ROOT_DIR`,
+  `HDF5_PLUGIN_PATH`, `UDUNITS2_XML_PATH` and the four `MPI*` compilers;
+  prepends only for `PATH`, `ACLOCAL_PATH`, `CMAKE_PREFIX_PATH`, `CPATH`,
+  `MANPATH` and `PKG_CONFIG_PATH`.
+- The `post_spack` hook (`deploy_tmp/post_spack_hpc.sh`) got the dynamic
+  activation (`source .../setup-env.sh` + `spack env activate
+  e3sm_unified_gnu_mpich`) and built mpi4py 4.1.1 against the view's
+  `mpicc`; the activation was captured afterwards.
+- Compute node (job 58747652, `check_compute.log`): the compute pixi env
+  and the spack env both activate; `python` is the pixi env's and reports
+  `mache 5.0.0rc1`; `ncremap`, `ESMF_RegridWeightGen`, `mbtempest` and
+  `GenerateOfflineMap` come from the view; `import mpi4py.MPI` reports
+  `CRAY MPICH version 9.0.1.498` and `srun -n 2` with mpi4py works;
+  `spack find` works; `ncremap --version` is 5.3.9.
+
+## 4. MPAS-Ocean and Omega suites on pm-cpu gnu
+
+Both suites were set up from the test-1 deployment with `--clean_build`
+and run on two nodes in the `debug` queue. The suite that the test plan
+calls `pr` is `mpaso_pr` in polaris `ca3dfa8e0`.
+
+- MPAS-Ocean (`polaris suite -c ocean -t mpaso_pr --model mpas-ocean`, job
+  58747263): the model built with `cc`/`ftn` against the library view's
+  PIO and the Cray netcdf/pnetcdf modules, and the suite is **PASS: All
+  passed successfully**, 21 tasks in 9:49.
+- Omega (`-t omega_pr --model omega`, job 58747401): `omega.exe` built
+  with `-DOMEGA_CIME_COMPILER=gnu` and `OMEGA_METIS_ROOT`/
+  `OMEGA_PARMETIS_ROOT` from the library view; the suite is **PASS: All
+  passed successfully**, 9:40.
+
+So nothing in the library env, the load script or the captured activation
+gets in the way of a model build or a run.
+
 ## Still open
 
 - Two stale paths in the pm templates, both pre-existing on `main`, and
