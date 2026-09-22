@@ -173,6 +173,53 @@ Checks:
   `CRAY MPICH version 9.0.1.498` and `srun -n 2` with mpi4py works;
   `spack find` works; `ncremap --version` is 5.3.9.
 
+## 3. polaris, pm-gpu gnugpu/mpich
+
+`polaris_pm-gpu/deploy.log`, mache `40579f2c`, fresh instance
+`polaris_pm-gpu_spack` and a separate polaris clone so the pm-cpu
+deployment stayed intact: **pass** on the first attempt, no deviations.
+
+- Library env `spack_env_gnugpu_mpich` from `pm-gpu_gnugpu_mpich.yaml`,
+  software env `polaris_software` from `pm-gpu_gnu_mpich.yaml` (a symlink
+  to the pm-cpu gnu template), as intended. The software env's packages
+  have the same hashes as the pm-cpu instance's (`esmf` `7m3g7sc`, `moab`
+  `sntljqj`, `eigen` `nkry6kn`, ...) while the library env's differ, which
+  is exactly the `craype-accel-nvidia80` versus `craype-accel-host`
+  difference.
+- `cudatoolkit/12.9` and `craype-accel-nvidia80` appear in the build
+  script's and the load script's module loads.
+- After sourcing `load_polaris_pm-gpu_gnugpu_mpich.sh`:
+  `POLARIS_COMPILER=gnugpu`, `$PIO` is the gnugpu library view,
+  `ESMF_RegridWeightGen` is the `polaris_software` view's, `python` is the
+  pixi env's, `craype-accel-nvidia80` is loaded and `spack find` works.
+
+## 5. pm-cpu intel and the nvidia templates
+
+`pm-cpu_intel_mpich.yaml` needed two fixes (`00515295`, above): a `gcc`
+external, without which the environment does not concretize at all, and
+the oneAPI root as `prefix:`, the failure already seen on Chrysalis and
+Aurora. Both were found by deploying polaris with `--compiler intel` into
+`polaris_intel_spack` and reproduced and fixed by hand on the instance
+before committing. With the fixed template the library env builds
+everything with `%oneapi@2025.3` (`intel-oneapi-runtime@2025.3` and
+`gcc-runtime@14.3.0` from the two externals, then metis, parmetis,
+e3sm-scorpio), and polaris's software env builds with gnu as
+`software_compiler = gnu` asks.
+
+The nvidia templates do **not** need the same gcc external: `nvhpc`
+declares the same run dependency on gcc, but nothing in these
+environments pulls in an `nvhpc-runtime` the way `intel-oneapi-runtime`
+pulls in `gcc-runtime`, so the solver never has to satisfy it. Checked
+with `pm-gpu_nvidiagpu_mpich.yaml` rendered through mache and concretized
+by hand in the pm-gpu instance: 10 specs, `nvhpc@25.9` external, no gcc
+node. `metis` and `parmetis` then build with nvhpc, but
+`e3sm-scorpio@2.0.3` fails in configure with `Could not find a Fortran
+type for passing PIO Offsets from Fortran to C`
+(`cmake/SPIOTypeUtils.cmake:172`). That is a SCORPIO/nvhpc problem rather
+than a template one, and no downstream deploy uses these templates today,
+so it is recorded and left alone. All of `PrgEnv-nvidia`, `nvidia/25.9`,
+`cudatoolkit/12.9` and `gcc-native-mixed/14` do exist on Perlmutter.
+
 ## 4. MPAS-Ocean and Omega suites on pm-cpu gnu
 
 Both suites were set up from the test-1 deployment with `--clean_build`
