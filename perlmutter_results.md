@@ -200,11 +200,16 @@ external, without which the environment does not concretize at all, and
 the oneAPI root as `prefix:`, the failure already seen on Chrysalis and
 Aurora. Both were found by deploying polaris with `--compiler intel` into
 `polaris_intel_spack` and reproduced and fixed by hand on the instance
-before committing. With the fixed template the library env builds
-everything with `%oneapi@2025.3` (`intel-oneapi-runtime@2025.3` and
+before committing. The deploy was then rerun with the fixed template
+(`polaris_intel/deploy_attempt2.log`, mache `00515295`): **pass**. The
+library env is all `%oneapi@2025.3` (`intel-oneapi-runtime@2025.3` and
 `gcc-runtime@14.3.0` from the two externals, then metis, parmetis,
-e3sm-scorpio), and polaris's software env builds with gnu as
-`software_compiler = gnu` asks.
+e3sm-scorpio) and the software env builds with gnu, as `software_compiler
+= gnu` asks. Sourcing `load_polaris_pm-cpu_intel_mpich.sh` gives
+`POLARIS_COMPILER=intel`, `$PIO` in the intel library view,
+`ESMF_RegridWeightGen` from `polaris_software`, python from pixi and a
+working `spack find`; the captured activation again has no
+`LD_LIBRARY_PATH` and no xpmem entry.
 
 The nvidia templates do **not** need the same gcc external: `nvhpc`
 declares the same run dependency on gcc, but nothing in these
