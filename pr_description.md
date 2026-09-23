@@ -12,9 +12,12 @@ What changes for downstream repositories:
 - A pre-existing bug found while testing: with `use_e3sm_hdf5_netcdf = False` or `exclude_packages: [cmake]`, the hdf5/netcdf/cmake specs a downstream package requested were dropped along with the template's own roots. Requested specs are now kept.
 - In the overlay, `esmf` removes upstream's run-time `python`/`py-pyyaml` dependencies by editing the class's dependency table after subclassing (directives cannot be un-inherited); a full recipe copy is the fallback if that proves fragile.
 
+Before merging: `e3sm-spack-packages` has two configure fixes on `main` that are not in the pinned tag `v2026.06.0` (netcdf-c's `MPI_Comm_f2c` detection with MPICH-based MPIs, and parallel-netcdf's `-fvisibility=hidden` for Fortran). Tag `v2026.06.1` and bump the pin so E3SM-Unified testing runs against them.
+
 Fixes #496
 
 Checklist
+- [ ] `e3sm-spack-packages` tagged and `mache/spack/pins.yaml` bumped to that tag
 - [x] User's Guide has been updated if needed
 - [x] Developer's Guide has been updated if needed
 - [x] API documentation lists any new or modified class, method, or function
